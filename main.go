@@ -66,11 +66,7 @@ func main() {
 			continue
 		}
 
-		if strings.HasPrefix(word, "-") {
-			continue
-		}
-
-		if strings.Contains(word, " ") {
+		if strings.Contains(word, "-") || strings.ContainsAny(word, "_") || strings.ContainsAny(word, " ") || strings.ContainsAny(word, ".") || strings.ContainsAny(word, "'") {
 			continue
 		}
 
@@ -97,6 +93,8 @@ func main() {
 
 WORD_LOOP:
 	for word, synonyms := range brotliThesaurus {
+		sort.Strings(synonyms)
+
 		for _, brotliWord := range brot {
 			if word == brotliWord {
 
@@ -106,11 +104,8 @@ WORD_LOOP:
 					}
 				}
 
-				brotliSynonyms, ok := brotliThesaurus[word]
-				if ok {
-					brotliSynonyms = append(brotliSynonyms, brotliWord)
-					brotliThesaurus[word] = brotliSynonyms
-				}
+				synonyms = append([]string{brotliWord}, synonyms...)
+				brotliThesaurus[word] = synonyms
 			}
 		}
 	}
